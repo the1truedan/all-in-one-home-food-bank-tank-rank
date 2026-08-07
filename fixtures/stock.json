@@ -1,0 +1,20 @@
+{
+  "stock": [
+    {"name": "eggs", "quantity": 6, "unit": "ea", "location": "fridge", "low_threshold": 2},
+    {"name": "milk", "quantity": 0.5, "unit": "L", "location": "fridge", "low_threshold": 1},
+    {"name": "butter", "quantity": 1, "unit": "stick", "location": "fridge"},
+    {"name": "chicken thighs", "quantity": 4, "unit": "ea", "location": "freezer"},
+    {"name": "frozen peas", "quantity": 1, "unit": "bag", "location": "freezer"},
+    {"name": "rice", "quantity": 2, "unit": "lb", "location": "pantry"},
+    {"name": "black beans", "quantity": 2, "unit": "can", "location": "cabinet"},
+    {"name": "pasta", "quantity": 1, "unit": "box", "location": "cabinet", "low_threshold": 1},
+    {"name": "canned tomatoes", "quantity": 3, "unit": "can", "location": "cabinet"},
+    {"name": "onion", "quantity": 2, "unit": "ea", "location": "pantry"},
+    {"name": "garlic", "quantity": 1, "unit": "bulb", "location": "pantry"},
+    {"name": "olive oil", "quantity": 1, "unit": "bottle", "location": "pantry"},
+    {"name": "salt", "quantity": 1, "unit": "box", "location": "spice"},
+    {"name": "black pepper", "quantity": 1, "unit": "jar", "location": "spice"},
+    {"name": "cumin", "quantity": 1, "unit": "jar", "location": "spice"},
+    {"name": "paprika", "quantity": 0, "unit": "jar", "location": "spice", "low_threshold": 1}
+  ]
+}

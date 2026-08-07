@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "home-food-tank-rank"
+version = "0.1.0"
+description = "Local-first home food bank: stock locations, recipe match, post-meal tank-rank, restock HITL"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "the1truedan / M.A.N.A.G.E.R. LLC" }]
+keywords = [
+  "grocy",
+  "tandoor",
+  "barcode",
+  "meal-planning",
+  "caregiver",
+  "inventory",
+  "self-hosted",
+  "local-first",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Home Automation",
+]
+dependencies = []
+
+[project.optional-dependencies]
+http = ["requests>=2.28"]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+home-food = "home_food_tank_rank.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["home_food_tank_rank*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

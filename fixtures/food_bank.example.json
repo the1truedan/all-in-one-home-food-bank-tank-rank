@@ -1,0 +1,6 @@
+{
+  "name": "Example Community Pantry",
+  "notes": "Synthetic only — replace locally; never commit real personal pantry PII",
+  "appointment_url": "https://example.org/pantry/appointments",
+  "phone": null
+}

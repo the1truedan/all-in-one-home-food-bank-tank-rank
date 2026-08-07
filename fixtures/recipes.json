@@ -1,0 +1,34 @@
+{
+  "recipes": [
+    {
+      "id": "r-pasta-simple",
+      "title": "Simple tomato pasta",
+      "ingredients": ["pasta", "canned tomatoes", "onion", "garlic", "olive oil", "salt"],
+      "source": "fixture"
+    },
+    {
+      "id": "r-beans-rice",
+      "title": "Black beans and rice",
+      "ingredients": ["black beans", "rice", "onion", "cumin", "salt", "garlic"],
+      "source": "fixture"
+    },
+    {
+      "id": "r-egg-scramble",
+      "title": "Egg scramble",
+      "ingredients": ["eggs", "butter", "salt", "black pepper", "milk"],
+      "source": "fixture"
+    },
+    {
+      "id": "r-chicken-peas",
+      "title": "Chicken thighs with peas",
+      "ingredients": ["chicken thighs", "frozen peas", "onion", "garlic", "paprika", "salt"],
+      "source": "fixture"
+    },
+    {
+      "id": "r-needs-many",
+      "title": "Fancy stew (mostly missing)",
+      "ingredients": ["lamb", "red wine", "rosemary", "carrots", "celery", "stock"],
+      "source": "fixture"
+    }
+  ]
+}

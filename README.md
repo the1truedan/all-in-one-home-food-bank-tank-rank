@@ -7,7 +7,7 @@ build a restock list and optional **HITL** food-pantry hint.
 | | |
 |--|--|
 | Package | `home_food_tank_rank` |
-| Version | **0.1.0** (private staging) |
+| Version | **0.1.0** (public alpha) |
 | Python | 3.10+ · **stdlib only** for core |
 | Related | M.A.R.V. resource loop inside private M.A.N.A.G.E.R. monorepo |
 
@@ -95,7 +95,7 @@ Keys never belong in git. See [`.env.example`](.env.example).
 
 ---
 
-## Public flip (later, human-gated)
+## Public status
 
-Private staging first. Public when: CI green, scrub checklist, synthetic-only samples, honest
-README limits. Agentic fix loops may validate; they must not auto-publish.
+Public alpha (2026-08-07). Scrub: synthetic fixtures only, no API keys, no household inventory.
+Live Grocy/Tandoor stay on your LAN — never commit keys. Further features remain HITL.

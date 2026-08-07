@@ -51,14 +51,33 @@ class GrocyAdapter:
     def health(self) -> Dict[str, Any]:
         if not self.configured:
             return {"ok": False, "reason": "missing GROCY_URL or GROCY_API_KEY"}
-        # systeminfo is common; fall back to products list
-        data = self._get("/api/system/info")
-        if data is not None:
-            return {"ok": True, "endpoint": "system/info", "data_keys": list(data)[:8] if isinstance(data, dict) else type(data).__name__}
-        data = self._get("/api/objects/products")
-        if data is not None:
-            return {"ok": True, "endpoint": "objects/products", "count": len(data) if isinstance(data, list) else None}
-        return {"ok": False, "reason": "request_failed"}
+        # Probe HTTP status: 200 JSON = ok; 401 = API up but key rejected (still reachable).
+        url = f"{self.base_url}/api/system/info"
+        req = urllib.request.Request(
+            url,
+            headers={"GROCY-API-KEY": self.api_key, "Accept": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                return {
+                    "ok": True,
+                    "http_status": getattr(resp, "status", 200),
+                    "endpoint": "system/info",
+                    "data_keys": list(data)[:8] if isinstance(data, dict) else type(data).__name__,
+                }
+        except urllib.error.HTTPError as e:
+            if e.code in (401, 403):
+                return {
+                    "ok": True,
+                    "http_status": e.code,
+                    "endpoint": "system/info",
+                    "auth": "rejected",
+                    "note": "API reachable; check GROCY_API_KEY",
+                }
+            return {"ok": False, "reason": f"http_{e.code}"}
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
+            return {"ok": False, "reason": type(e).__name__}
 
     def fetch_stock(self) -> List[StockItem]:
         """Best-effort map of Grocy stock entries → StockItem."""

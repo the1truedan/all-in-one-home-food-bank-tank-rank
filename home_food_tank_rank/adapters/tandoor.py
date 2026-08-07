@@ -45,14 +45,33 @@ class TandoorAdapter:
     def health(self) -> Dict[str, Any]:
         if not self.configured:
             return {"ok": False, "reason": "missing TANDOOR_URL or TANDOOR_API_KEY"}
-        data = self._get("/api/recipe/")
-        if data is None:
-            return {"ok": False, "reason": "request_failed"}
-        if isinstance(data, dict) and "results" in data:
-            return {"ok": True, "count": len(data.get("results") or [])}
-        if isinstance(data, list):
-            return {"ok": True, "count": len(data)}
-        return {"ok": True, "shape": type(data).__name__}
+        url = f"{self.base_url}/api/recipe/"
+        req = urllib.request.Request(
+            url,
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Accept": "application/json",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                if isinstance(data, dict) and "results" in data:
+                    return {"ok": True, "http_status": 200, "count": len(data.get("results") or [])}
+                if isinstance(data, list):
+                    return {"ok": True, "http_status": 200, "count": len(data)}
+                return {"ok": True, "http_status": 200, "shape": type(data).__name__}
+        except urllib.error.HTTPError as e:
+            if e.code in (401, 403):
+                return {
+                    "ok": True,
+                    "http_status": e.code,
+                    "auth": "rejected",
+                    "note": "API reachable; check TANDOOR_API_KEY",
+                }
+            return {"ok": False, "reason": f"http_{e.code}"}
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
+            return {"ok": False, "reason": type(e).__name__}
 
     def fetch_recipes(self) -> List[dict]:
         data = self._get("/api/recipe/")

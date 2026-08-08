@@ -42,6 +42,39 @@ def cmd_match(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_live_match(args: argparse.Namespace) -> int:
+    """Grocy stock × Tandoor recipes (env: GROCY_*, TANDOOR_*)."""
+    from home_food_tank_rank.live_match import run_live_match
+
+    report = run_live_match(
+        db_path=str(_default_db(args)),
+        recipe_limit=args.limit,
+        min_cover=args.min_cover,
+        top_n=args.top,
+        persist_stock=not args.no_persist,
+    )
+    print(json.dumps(report, indent=2))
+    # non-zero if adapters misconfigured
+    g_ok = report.get("health", {}).get("grocy", {}).get("ok")
+    t_ok = report.get("health", {}).get("tandoor", {}).get("ok")
+    if not g_ok or not t_ok:
+        return 2
+    return 0
+
+
+def cmd_health(args: argparse.Namespace) -> int:
+    from home_food_tank_rank.adapters.grocy import GrocyAdapter
+    from home_food_tank_rank.adapters.tandoor import TandoorAdapter
+
+    print(
+        json.dumps(
+            {"grocy": GrocyAdapter().health(), "tandoor": TandoorAdapter().health()},
+            indent=2,
+        )
+    )
+    return 0
+
+
 def cmd_cook(args: argparse.Namespace) -> int:
     rank = TankRank(_default_db(args))
     attempt = rank.log_attempt(
@@ -124,6 +157,23 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--recipes", default="fixtures/recipes.json")
     s.add_argument("--min-cover", type=float, default=0.5)
     s.set_defaults(func=cmd_match)
+
+    s = sub.add_parser(
+        "live-match",
+        help="Pull Grocy stock + Tandoor recipes and match (env GROCY_*/TANDOOR_*)",
+    )
+    s.add_argument("--limit", type=int, default=40, help="Max Tandoor recipes to hydrate")
+    s.add_argument("--min-cover", type=float, default=0.0)
+    s.add_argument("--top", type=int, default=15)
+    s.add_argument(
+        "--no-persist",
+        action="store_true",
+        help="Do not write Grocy stock into local SQLite",
+    )
+    s.set_defaults(func=cmd_live_match)
+
+    s = sub.add_parser("health", help="Grocy + Tandoor adapter health (env keys)")
+    s.set_defaults(func=cmd_health)
 
     s = sub.add_parser("cook", help="Log a meal attempt")
     s.add_argument("recipe_id")

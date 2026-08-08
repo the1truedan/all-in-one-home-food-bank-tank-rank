@@ -80,52 +80,70 @@ class GrocyAdapter:
             return {"ok": False, "reason": type(e).__name__}
 
     def fetch_stock(self) -> List[StockItem]:
-        """Best-effort map of Grocy stock entries → StockItem."""
+        """Best-effort map of Grocy stock entries → StockItem.
+
+        Tries /api/stock first, then stock current amounts per product, then product catalog
+        (qty 0) so empty kitchens still report product names if any exist.
+        """
         raw = self._get("/api/stock")
-        if not isinstance(raw, list):
-            # older/simple: products only with amount 0 placeholder
-            products = self._get("/api/objects/products")
-            if not isinstance(products, list):
-                return []
-            out: List[StockItem] = []
-            for p in products:
-                name = str(p.get("name") or p.get("id") or "product")
+        out: List[StockItem] = []
+        if isinstance(raw, list) and raw:
+            for row in raw:
+                product = row.get("product") or {}
+                name = str(
+                    product.get("name")
+                    or row.get("product_name")
+                    or row.get("product_id")
+                    or "item"
+                )
+                qty = float(row.get("amount") or row.get("amount_aggregated") or 0)
+                loc_name = None
+                if isinstance(row.get("location"), dict):
+                    loc_name = row["location"].get("name")
                 out.append(
                     StockItem(
                         name=name,
-                        quantity=0.0,
-                        location=FoodLocation.PANTRY,
-                        barcode=str(p.get("barcode") or "") or None,
+                        quantity=qty,
+                        location=FoodLocation.coerce(loc_name),
+                        barcode=str(product.get("barcode") or "") or None,
+                        expires_on=row.get("best_before_date"),
                         source="grocy",
-                        metadata={"grocy_product_id": p.get("id")},
+                        metadata={"grocy_product_id": product.get("id") or row.get("product_id")},
                     )
                 )
             return out
-        out = []
-        for row in raw:
-            product = row.get("product") or {}
-            name = str(
-                product.get("name")
-                or row.get("product_name")
-                or row.get("product_id")
-                or "item"
-            )
-            qty = float(row.get("amount") or row.get("amount_aggregated") or 0)
-            loc_name = None
-            if isinstance(row.get("location"), dict):
-                loc_name = row["location"].get("name")
+
+        products = self._get("/api/objects/products")
+        if not isinstance(products, list):
+            return []
+        for p in products:
+            pid = p.get("id")
+            name = str(p.get("name") or pid or "product")
+            qty = 0.0
+            if pid is not None:
+                detail = self._get(f"/api/stock/products/{pid}")
+                if isinstance(detail, dict):
+                    qty = float(
+                        detail.get("stock_amount")
+                        or detail.get("amount")
+                        or detail.get("stock_amount_opened")
+                        or 0
+                    )
             out.append(
                 StockItem(
                     name=name,
                     quantity=qty,
-                    location=FoodLocation.coerce(loc_name),
-                    barcode=str(product.get("barcode") or "") or None,
-                    expires_on=row.get("best_before_date"),
+                    location=FoodLocation.PANTRY,
+                    barcode=str(p.get("barcode") or "") or None,
                     source="grocy",
-                    metadata={"raw_keys": list(row.keys())[:12]},
+                    metadata={"grocy_product_id": pid},
                 )
             )
         return out
+
+    def locations(self) -> List[dict]:
+        raw = self._get("/api/objects/locations")
+        return raw if isinstance(raw, list) else []
 
     def fetch_recipes(self) -> List[dict]:
         raw = self._get("/api/objects/recipes")

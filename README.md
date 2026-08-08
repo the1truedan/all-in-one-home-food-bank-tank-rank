@@ -71,6 +71,10 @@ export GROCY_URL="http://your-host:port"
 export GROCY_API_KEY="..."
 export TANDOOR_URL="http://your-host:port"
 export TANDOOR_API_KEY="..."
+
+python3 -m home_food_tank_rank.cli health
+# Grocy stock × Tandoor recipes (prepare-only JSON)
+python3 -m home_food_tank_rank.cli live-match --limit 30 --top 12
 ```
 
 ```python
@@ -82,6 +86,8 @@ print(TandoorAdapter().health())
 ```
 
 Keys never belong in git. See [`.env.example`](.env.example).
+
+M.A.N.A.G.E.R. mesh framing (private): `manager-module-home-food-tank-rank` — backstory + M.A.R.V. bridge.
 
 ---
 

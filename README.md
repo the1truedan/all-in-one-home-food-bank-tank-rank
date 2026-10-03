@@ -109,6 +109,8 @@ Live Grocy/Tandoor stay on your LAN — never commit keys. Further features rema
 ---
 
 <p align="left">
+  <a href="https://github.com/the1truedan/all-in-one-home-food-bank-tank-rank"><img src="https://img.shields.io/badge/GitHub-all--in--one--home--food--bank--tank--rank-e8b84a?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"></a>
+  <a href="https://github.com/the1truedan/all-in-one-home-food-bank-tank-rank/releases/tag/v0.1.0"><img src="https://img.shields.io/badge/release-v0.1.0-3dcaa0?style=for-the-badge" alt="v0.1.0"></a>
   <a href="https://linktr.ee/the1truedan"><img src="https://img.shields.io/badge/Linktree-39E09B?style=for-the-badge&logo=linktree&logoColor=white" alt="Linktree"></a>
   <a href="https://ko-fi.com/the1truedan"><img src="https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
 </p>

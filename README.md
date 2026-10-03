@@ -105,3 +105,9 @@ M.A.N.A.G.E.R. mesh framing (private): `manager-module-home-food-tank-rank` — 
 
 Public alpha (2026-08-07). Scrub: synthetic fixtures only, no API keys, no household inventory.
 Live Grocy/Tandoor stay on your LAN — never commit keys. Further features remain HITL.
+
+<!-- manager-footer:start -->
+---
+
+<p align="center">© 2026 M.A.N.A.G.E.R. LLC — prepare for the care when we cannot be there · <a href="https://linktr.ee/the1truedan">Linktree</a> · <a href="https://ko-fi.com/the1truedan">Ko-fi</a></p>
+<!-- manager-footer:end -->
